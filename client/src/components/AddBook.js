@@ -3,14 +3,29 @@ import { getAuthorsQuery } from "../queries/queries";
 import { graphql } from "@apollo/client/react/hoc";
 
 const AddBook = (props) => {
-	const [name, setName] = useState("");
-	const [genre, setGenre] = useState("");
-	const [authorId, setAuthorId] = useState("");
-	// const [form, setForm] = useState({
-	// 	name: "",
-	// 	genre: "",
-	// 	authorId: "",
-	// });
+	// const [name, setName] = useState("");
+	// const [genre, setGenre] = useState("");
+	// const [authorId, setAuthorId] = useState("");
+	const [form, setForm] = useState({
+		name: "",
+		genre: "",
+		authorId: "",
+	});
+	const updateField = (e) => {
+		setForm({
+			...form,
+			[e.target.name]: e.target.value,
+		});
+	};
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		// let bookForm = {
+		// 	name,
+		// 	genre,
+		// 	authorId,
+		// };
+		console.log(form.name, form.genre, form.authorId);
+	};
 	const displayAuthors = () => {
 		let data = props.data;
 		if (data.loading) {
@@ -25,34 +40,20 @@ const AddBook = (props) => {
 		});
 	};
 
-    const handleSubmit = e => 
-			e.preventDefault();
-      let bookForm = {
-        name, genre, authorId
-      }
-			console.log(bookForm);
-
-
 	return (
 		<React.Fragment>
 			<form id="add-book" onSubmit={handleSubmit}>
 				<div className="field">
 					<label>Book name:</label>
-					<input
-						onChange={(e) => setName({ name: e.target.value })}
-						type="text"
-					/>
+					<input onChange={updateField} type="text" name="name" value={form.name}/>
 				</div>
 				<div className="field">
 					<label>Genre:</label>
-					<input
-						onChange={(e) => setGenre({ genre: e.target.value })}
-						type="text"
-					/>
+					<input onChange={updateField} type="text" name="genre" value={form.genre}/>
 				</div>
 				<div className="field">
 					<label>Author:</label>
-					<select onChange={(e) => setAuthorId({ authorId: e.target.value })}>
+					<select name="authorId" value={form.authorId} onChange={updateField}>
 						<option>Select Author</option>
 						{displayAuthors()}
 					</select>
