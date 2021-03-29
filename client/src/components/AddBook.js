@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { getAuthorsQuery } from "../queries/queries";
+import { getAuthorsQuery, addBookMutation } from "../queries/queries";
 import { graphql } from "@apollo/client/react/hoc";
+import { flowRight as compose } from "lodash";
 
 const AddBook = (props) => {
 	// const [name, setName] = useState("");
@@ -24,10 +25,17 @@ const AddBook = (props) => {
 		// 	genre,
 		// 	authorId,
 		// };
-		console.log(form.name, form.genre, form.authorId);
+		console.log(form);
+		props.addBookMutation({
+			variables: {
+				name: form.name,
+				genre: form.genre,
+				authorId: form.authorId,
+			},
+		});
 	};
 	const displayAuthors = () => {
-		let data = props.data;
+		let data = props.getAuthorsQuery;
 		if (data.loading) {
 			return <option disabled>Loading authors...</option>;
 		}
@@ -45,11 +53,21 @@ const AddBook = (props) => {
 			<form id="add-book" onSubmit={handleSubmit}>
 				<div className="field">
 					<label>Book name:</label>
-					<input onChange={updateField} type="text" name="name" value={form.name}/>
+					<input
+						onChange={updateField}
+						type="text"
+						name="name"
+						value={form.name}
+					/>
 				</div>
 				<div className="field">
 					<label>Genre:</label>
-					<input onChange={updateField} type="text" name="genre" value={form.genre}/>
+					<input
+						onChange={updateField}
+						type="text"
+						name="genre"
+						value={form.genre}
+					/>
 				</div>
 				<div className="field">
 					<label>Author:</label>
@@ -64,4 +82,8 @@ const AddBook = (props) => {
 	);
 };
 
-export default graphql(getAuthorsQuery)(AddBook);
+export default compose(
+	graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
+	graphql(addBookMutation, { name: "addBookMutation" })
+)(AddBook);
+// export default graphql(getAuthorsQuery)(AddBook);
